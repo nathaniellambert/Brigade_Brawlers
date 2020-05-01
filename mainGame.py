@@ -1,4 +1,5 @@
 from tkinter import *
+from tkinter import messagebox as mBox
 from PIL import ImageTk, Image
 import os
 
@@ -10,11 +11,12 @@ class Game(Tk):
         self.bg_main = "#%02x%02x%02x" % (247,219,151) #beige
         self.fg_main = "#%02x%02x%02x" % (241,127,19) #orange
 
+        ############################ Root Setup ############################
         root = Toplevel()
         root.title("Brigade Brawlers")
         root.grid_rowconfigure(1, weight=1)
         root.grid_columnconfigure(1, weight=1)
-        root.geometry("1100x600")
+        root.geometry("990x595")
 
         windowWidth = root.winfo_reqwidth()
         windowHeight = root.winfo_reqheight()
@@ -22,6 +24,19 @@ class Game(Tk):
         positionDown = int(root.winfo_screenheight()/3 - windowHeight/2)
         root.geometry("+{}+{}".format(positionRight, positionDown))
 
+        ############################ Commands ############################
+        def doQuit(*args):
+            #if mBox.askokcancel("Quit", "Are you sure you want to quit?"):
+            root.destroy()
+
+        ############################ Menus ############################
+        mainMenu = Menu(root)
+        root.config(menu=mainMenu)
+        fileMenu = Menu(mainMenu,tearoff=0)
+        mainMenu.add_cascade(label="File",menu=fileMenu)
+        fileMenu.add_command(label="Quit",command=doQuit,accelerator="Ctrl+Q")
+
+        ############################ Design ############################
         self.frames = {}
         for F in (MainMenu, PlayerChooser, ControlsMenu):
             page_name = F.__name__
@@ -29,6 +44,10 @@ class Game(Tk):
             self.frames[page_name] = frame
             frame.grid(row=0, column=0, sticky="nsew")
         self.show_frame("MainMenu")
+
+        ############################ Main Loop ############################
+        root.bind("<Control-q>",doQuit)
+        root.mainloop()
 
     def show_frame(self, page_name):
         frame = self.frames[page_name]
@@ -57,18 +76,18 @@ class MainMenu(Frame):
         img_boxer1 = ImageTk.PhotoImage(raw_boxer1)
 
         ############################ Widgets ############################
-        gameTitle_Label = Label(frame_top,text="Brigade Brawlers",font="Verdana 40 bold",
-            bg=controller.bg_main)
+        gameTitle_Label = Label(frame_top,text="Brigade Brawlers",
+            font="Helvetica 40 bold italic underline",bg=controller.bg_main)
         menuFigure_Label = Label(frame_middle,image=img_boxer1,bg=controller.bg_main)
         menuFigure_Label.image = img_boxer1
         play_Button = Button(frame_bottom, text="Play",cursor="hand2",
-            bg=controller.fg_main,font="Verdana 28 bold",borderwidth=5,padx=10,pady=6,width=20,
+            bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=20,
             command=lambda: controller.show_frame("PlayerChooser"))
         controls_Button = Button(frame_bottom, text="Controls",cursor="hand2",
-            bg=controller.fg_main,font="Verdana 28 bold",borderwidth=5,padx=10,pady=6,width=20,
+            bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=20,
             command=lambda: controller.show_frame("ControlsMenu"))
 
-        ############################ Design Layout ############################
+        ############################ Design ############################
         #frame_top Design Layout
         gameTitle_Label.pack(expand=True)
 
@@ -95,10 +114,10 @@ class ControlsMenu(Frame):
         controls_Label = Label(self,image=img_controls,bg=controller.bg_main)
         controls_Label.image = img_controls
         return_button = Button(self, text="Return to Menu",cursor="hand2",
-            bg=controller.fg_main,font="Verdana 28 bold",borderwidth=5,padx=10,pady=6,width=20,
+            bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=20,
             command=lambda: controller.show_frame("MainMenu"))
 
-        ############################ Design Layout ############################
+        ############################ Design ############################
         controls_Label.pack()
         return_button.pack(side=BOTTOM)
 
@@ -116,8 +135,9 @@ class PlayerChooser(Frame):
         return_button.pack(side=BOTTOM)
 
 if __name__ == "__main__":
-    game = Game()
-    game.mainloop()
+    #game = Game()
+    #game.mainloop()
+    Game()
 
 
 """
