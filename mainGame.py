@@ -14,7 +14,7 @@ class Game(Tk):
         root.title("Brigade Brawlers")
         root.grid_rowconfigure(1, weight=1)
         root.grid_columnconfigure(1, weight=1)
-        root.geometry("1050x600")
+        root.geometry("1100x600")
 
         windowWidth = root.winfo_reqwidth()
         windowHeight = root.winfo_reqheight()
