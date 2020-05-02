@@ -3,7 +3,8 @@ from tkinter import messagebox as mBox
 from PIL import ImageTk, Image
 import os
 import platform
-import pygame
+import pygame, sys, random
+from pygame.locals import *
 import time
 
 class Game(Tk):
@@ -66,7 +67,7 @@ class GameScreen(Frame):
         self.config(bg=bgMain)
 
         ############################ Images ############################
-        raw_gameBG = Image.open("resources/gameBG.png")
+        raw_gameBG = Image.open("resources/washingtonhall.png")
         raw_gameBG = raw_gameBG.resize((980,560))
         img_gameBG = ImageTk.PhotoImage(raw_gameBG)
 
@@ -88,8 +89,10 @@ class GameScreen(Frame):
         elif system == "Linux":
             os.environ['SDL_VIDEODRIVER'] = 'x11'
 
+        ############################ PyGame ############################
         screen = pygame.display.set_mode((200,200))
         pygame.display.init()
+
         pygame.display.update()
 
         """
@@ -121,7 +124,7 @@ class MainScreen(Frame):
         frame_bottom.pack(expand=True)
 
         ############################ Images ############################
-        raw_plebe1 = Image.open("resources/plebe1.png")
+        raw_plebe1 = Image.open("resources/plebe/plebeReady.png")
         raw_plebe1 = raw_plebe1.resize((raw_plebe1.size[0]*3, raw_plebe1.size[1]*3))
         img_plebe1 = ImageTk.PhotoImage(raw_plebe1)
 
@@ -210,19 +213,19 @@ class ChoosePlayerScreen(Frame):
         frame_bottom.pack(expand=True)
 
         ############################ Images ############################
-        raw_plebe1 = Image.open("resources/plebe1.png")
+        raw_plebe1 = Image.open("resources/plebe/plebeStanding.png")
         raw_plebe1 = raw_plebe1.resize((200,240))
         img_plebe1 = ImageTk.PhotoImage(raw_plebe1)
 
-        raw_firstie1 = Image.open("resources/plebe1.png")
-        raw_firstie1 = raw_firstie1.resize((200,240))
-        img_firstie1 = ImageTk.PhotoImage(raw_firstie1)
+        raw_dpe1 = Image.open("resources/dpe/dpeStanding.png")
+        raw_dpe1 = raw_dpe1.resize((200,240))
+        img_dpe1 = ImageTk.PhotoImage(raw_dpe1)
 
-        raw_supt1 = Image.open("resources/plebe1.png")
+        raw_supt1 = Image.open("resources/supt/suptStanding.png")
         raw_supt1 = raw_supt1.resize((200,240))
         img_supt1 = ImageTk.PhotoImage(raw_supt1)
 
-        raw_acu1 = Image.open("resources/plebe1.png")
+        raw_acu1 = Image.open("resources/acu/acuStanding.png")
         raw_acu1 = raw_acu1.resize((200,240))
         img_acu1 = ImageTk.PhotoImage(raw_acu1)
 
@@ -232,17 +235,17 @@ class ChoosePlayerScreen(Frame):
 
         plebe1_label = Label(frame_middleTop,image=img_plebe1,bg=bgMain)
         plebe1_label.image = img_plebe1
-        firstie1_label = Label(frame_middleTop,image=img_plebe1,bg=bgMain)
-        firstie1_label.image = img_firstie1
-        supt1_label = Label(frame_middleTop,image=img_plebe1,bg=bgMain)
+        dpe1_label = Label(frame_middleTop,image=img_dpe1,bg=bgMain)
+        dpe1_label.image = img_dpe1
+        supt1_label = Label(frame_middleTop,image=img_supt1,bg=bgMain)
         supt1_label.image = img_supt1
-        acu1_label = Label(frame_middleTop,image=img_plebe1,bg=bgMain)
+        acu1_label = Label(frame_middleTop,image=img_acu1,bg=bgMain)
         acu1_label.image = img_acu1
 
         plebe1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=playerVar,value=1,
             padx=65,activebackground="white",indicatoron=0,text="Plebe",font="Helvetica 20 bold")
-        firstie1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=playerVar,value=2,
-            padx=65,activebackground="white",indicatoron=0,text="Firstie",font="Helvetica 20 bold")
+        dpe1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=playerVar,value=2,
+            padx=65,activebackground="white",indicatoron=0,text="DPE",font="Helvetica 20 bold")
         supt1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=playerVar,value=3,
             padx=65,activebackground="white",indicatoron=0,text="SUPT",font="Helvetica 20 bold")
         acu1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=playerVar,value=4,
@@ -261,14 +264,14 @@ class ChoosePlayerScreen(Frame):
 
         #frame_middleTop Design Layout
         plebe1_label.grid(row=0,column=0)
-        firstie1_label.grid(row=0,column=1)
+        dpe1_label.grid(row=0,column=1)
         supt1_label.grid(row=0,column=2)
         acu1_label.grid(row=0,column=3)
 
         #frame_middleBottom Design Layout
         plebe1_radiobutton.grid(row=0,column=0)
         plebe1_radiobutton.select()
-        firstie1_radiobutton.grid(row=0,column=1)
+        dpe1_radiobutton.grid(row=0,column=1)
         supt1_radiobutton.grid(row=0,column=2)
         acu1_radiobutton.grid(row=0,column=3)
 
@@ -298,19 +301,19 @@ class ChooseOpponentScreen(Frame):
         frame_bottom.pack(expand=True)
 
         ############################ Images ############################
-        raw_plebe1 = Image.open("resources/plebe1.png")
+        raw_plebe1 = Image.open("resources/plebe/plebeStanding.png")
         raw_plebe1 = raw_plebe1.resize((200,240))
         img_plebe1 = ImageTk.PhotoImage(raw_plebe1)
 
-        raw_firstie1 = Image.open("resources/plebe1.png")
-        raw_firstie1 = raw_firstie1.resize((200,240))
-        img_firstie1 = ImageTk.PhotoImage(raw_firstie1)
+        raw_dpe1 = Image.open("resources/dpe/dpeStanding.png")
+        raw_dpe1 = raw_dpe1.resize((200,240))
+        img_dpe1 = ImageTk.PhotoImage(raw_dpe1)
 
-        raw_supt1 = Image.open("resources/plebe1.png")
+        raw_supt1 = Image.open("resources/supt/suptStanding.png")
         raw_supt1 = raw_supt1.resize((200,240))
         img_supt1 = ImageTk.PhotoImage(raw_supt1)
 
-        raw_acu1 = Image.open("resources/plebe1.png")
+        raw_acu1 = Image.open("resources/acu/acuStanding.png")
         raw_acu1 = raw_acu1.resize((200,240))
         img_acu1 = ImageTk.PhotoImage(raw_acu1)
 
@@ -320,17 +323,17 @@ class ChooseOpponentScreen(Frame):
 
         plebe1_label = Label(frame_middleTop,image=img_plebe1,bg=bgMain)
         plebe1_label.image = img_plebe1
-        firstie1_label = Label(frame_middleTop,image=img_plebe1,bg=bgMain)
-        firstie1_label.image = img_firstie1
-        supt1_label = Label(frame_middleTop,image=img_plebe1,bg=bgMain)
+        dpe1_label = Label(frame_middleTop,image=img_dpe1,bg=bgMain)
+        dpe1_label.image = img_dpe1
+        supt1_label = Label(frame_middleTop,image=img_supt1,bg=bgMain)
         supt1_label.image = img_supt1
-        acu1_label = Label(frame_middleTop,image=img_plebe1,bg=bgMain)
+        acu1_label = Label(frame_middleTop,image=img_acu1,bg=bgMain)
         acu1_label.image = img_acu1
 
         plebe1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=opponentVar,value=1,
             padx=65,activebackground="white",indicatoron=0,text="Plebe",font="Helvetica 20 bold")
-        firstie1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=opponentVar,value=2,
-            padx=65,activebackground="white",indicatoron=0,text="Firstie",font="Helvetica 20 bold")
+        dpe1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=opponentVar,value=2,
+            padx=65,activebackground="white",indicatoron=0,text="DPE",font="Helvetica 20 bold")
         supt1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=opponentVar,value=3,
             padx=65,activebackground="white",indicatoron=0,text="SUPT",font="Helvetica 20 bold")
         acu1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=opponentVar,value=4,
@@ -349,14 +352,14 @@ class ChooseOpponentScreen(Frame):
 
         #frame_middleTop Design Layout
         plebe1_label.grid(row=0,column=0)
-        firstie1_label.grid(row=0,column=1)
+        dpe1_label.grid(row=0,column=1)
         supt1_label.grid(row=0,column=2)
         acu1_label.grid(row=0,column=3)
 
         #frame_middleBottom Design Layout
         plebe1_radiobutton.grid(row=0,column=0)
         plebe1_radiobutton.select()
-        firstie1_radiobutton.grid(row=0,column=1)
+        dpe1_radiobutton.grid(row=0,column=1)
         supt1_radiobutton.grid(row=0,column=2)
         acu1_radiobutton.grid(row=0,column=3)
 
