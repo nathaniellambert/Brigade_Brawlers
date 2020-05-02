@@ -1,15 +1,12 @@
 from tkinter import *
 from tkinter import messagebox as mBox
 from PIL import ImageTk, Image
-import os
-import platform
-import pygame, sys, random
-from pygame.locals import *
-import time
+import testPygame
 
 class Game(Tk):
-    def __init__(self, *args, **kwargs):
-        Tk.__init__(self, *args, **kwargs)
+    def __init__(self,state):
+        Tk.__init__(self)
+        self.state = state
 
         ############################ Colors ############################
         self.bg_main = "#%02x%02x%02x" % (247,219,151) #beige
@@ -31,7 +28,6 @@ class Game(Tk):
         ############################ Commands ############################
         def doQuit(*args):
             #if mBox.askokcancel("Quit", "Are you sure you want to quit?"):
-            pygame.quit()
             root.destroy()
 
         ############################ Menus ############################
@@ -44,12 +40,16 @@ class Game(Tk):
         ############################ Design ############################
         self.frames = {}
         for F in (MainScreen,ChoosePlayerScreen,ControlsScreen,ChoosePlayerScreen,
-                  ChooseOpponentScreen,GameScreen):
+                  ChooseOpponentScreen,IdleScreen):
             page_name = F.__name__
             frame = F(parent=root, controller=self)
             self.frames[page_name] = frame
             frame.grid(row=0, column=0, sticky="nsew")
-        self.show_frame("MainScreen")
+        if (self.state == "startup"):
+            self.show_frame("MainScreen")
+        if (self.state == "resume"):
+            root.withdraw()
+            self.show_frame("IdleScreen")
 
         ############################ Main Loop ############################
         root.bind("<Control-q>",doQuit)
@@ -59,52 +59,8 @@ class Game(Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 
-class GameScreen(Frame):
-    def __init__(self, parent, controller):
-        Frame.__init__(self, parent)
-        self.controller = controller
-        bgMain = controller.bg_main
-        self.config(bg=bgMain)
-
-        ############################ Images ############################
-        raw_gameBG = Image.open("resources/washingtonhall.png")
-        raw_gameBG = raw_gameBG.resize((980,560))
-        img_gameBG = ImageTk.PhotoImage(raw_gameBG)
-
-        ############################ Frames ############################
-        pygame_frame = Frame(self,highlightbackground=bgMain,highlightthickness=1)
-        pygame_frame.pack(expand=True)
-
-        ############################ Widgets ############################
-        background_label = Label(pygame_frame, image=img_gameBG)
-        background_label.image = img_gameBG
-
-        ############################ Design ############################
-        background_label.pack()
-
-        os.environ['SDL_WINDOWID'] = str(pygame_frame.winfo_id())
-        system = platform.system()
-        if system == "Windows":
-            os.environ['SDL_VIDEODRIVER'] = 'windib'
-        elif system == "Linux":
-            os.environ['SDL_VIDEODRIVER'] = 'x11'
-
-        ############################ PyGame ############################
-        screen = pygame.display.set_mode((200,200))
-        pygame.display.init()
-
-        pygame.display.update()
-
-        """
-        ############################ Widgets ############################
-        return_button = Button(self, text="Return to Menu",cursor="hand2",
-            bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=20,
-            command=lambda: controller.show_frame("MainScreen"),activebackground=bgMain)
-
-        ############################ Design ############################
-        return_button.pack(side=BOTTOM)
-        """
-
+    def runGame(self):
+        testPygame.play_game()
 
 class MainScreen(Frame):
     def __init__(self, parent, controller):
@@ -177,7 +133,7 @@ class ControlsScreen(Frame):
             font="Helvetica 40 bold italic underline",bg=bgMain)
         controls_label = Label(frame_middle,image=img_controls,bg=bgMain)
         controls_label.image = img_controls
-        return_button = Button(frame_bottom, text="Return to Menu",cursor="hand2",
+        back_button = Button(frame_bottom, text="Return to Menu",cursor="hand2",
             bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=20,
             command=lambda: controller.show_frame("MainScreen"),activebackground=bgMain)
 
@@ -189,7 +145,7 @@ class ControlsScreen(Frame):
         controls_label.pack(expand=True)
 
         #frame_bottom Design Layout
-        return_button.pack(expand=True)
+        back_button.pack(expand=True)
 
 class ChoosePlayerScreen(Frame):
     def __init__(self, parent, controller):
@@ -214,19 +170,19 @@ class ChoosePlayerScreen(Frame):
 
         ############################ Images ############################
         raw_plebe1 = Image.open("resources/plebe/plebeStanding.png")
-        raw_plebe1 = raw_plebe1.resize((200,240))
+        raw_plebe1 = raw_plebe1.resize((200,300))
         img_plebe1 = ImageTk.PhotoImage(raw_plebe1)
 
         raw_dpe1 = Image.open("resources/dpe/dpeStanding.png")
-        raw_dpe1 = raw_dpe1.resize((200,240))
+        raw_dpe1 = raw_dpe1.resize((200,300))
         img_dpe1 = ImageTk.PhotoImage(raw_dpe1)
 
         raw_supt1 = Image.open("resources/supt/suptStanding.png")
-        raw_supt1 = raw_supt1.resize((200,240))
+        raw_supt1 = raw_supt1.resize((200,300))
         img_supt1 = ImageTk.PhotoImage(raw_supt1)
 
         raw_acu1 = Image.open("resources/acu/acuStanding.png")
-        raw_acu1 = raw_acu1.resize((200,240))
+        raw_acu1 = raw_acu1.resize((200,300))
         img_acu1 = ImageTk.PhotoImage(raw_acu1)
 
         ############################ Widgets ############################
@@ -251,7 +207,7 @@ class ChoosePlayerScreen(Frame):
         acu1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=playerVar,value=4,
             padx=65,activebackground="white",indicatoron=0,text="ACU",font="Helvetica 20 bold")
 
-        return_button = Button(frame_bottom, text="Return to Menu",cursor="hand2",
+        back_button = Button(frame_bottom, text="Return to Menu",cursor="hand2",
             bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=15,
             command=lambda: controller.show_frame("MainScreen"),activebackground=bgMain)
         next_button = Button(frame_bottom, text="Next",cursor="hand2",
@@ -276,7 +232,7 @@ class ChoosePlayerScreen(Frame):
         acu1_radiobutton.grid(row=0,column=3)
 
         #frame_bottom Design Layout
-        return_button.pack(side=LEFT)
+        back_button.pack(side=LEFT)
         next_button.pack(side=RIGHT)
 
 class ChooseOpponentScreen(Frame):
@@ -302,19 +258,19 @@ class ChooseOpponentScreen(Frame):
 
         ############################ Images ############################
         raw_plebe1 = Image.open("resources/plebe/plebeStanding.png")
-        raw_plebe1 = raw_plebe1.resize((200,240))
+        raw_plebe1 = raw_plebe1.resize((200,300))
         img_plebe1 = ImageTk.PhotoImage(raw_plebe1)
 
         raw_dpe1 = Image.open("resources/dpe/dpeStanding.png")
-        raw_dpe1 = raw_dpe1.resize((200,240))
+        raw_dpe1 = raw_dpe1.resize((200,300))
         img_dpe1 = ImageTk.PhotoImage(raw_dpe1)
 
         raw_supt1 = Image.open("resources/supt/suptStanding.png")
-        raw_supt1 = raw_supt1.resize((200,240))
+        raw_supt1 = raw_supt1.resize((200,300))
         img_supt1 = ImageTk.PhotoImage(raw_supt1)
 
         raw_acu1 = Image.open("resources/acu/acuStanding.png")
-        raw_acu1 = raw_acu1.resize((200,240))
+        raw_acu1 = raw_acu1.resize((200,300))
         img_acu1 = ImageTk.PhotoImage(raw_acu1)
 
         ############################ Widgets ############################
@@ -339,12 +295,12 @@ class ChooseOpponentScreen(Frame):
         acu1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=opponentVar,value=4,
             padx=65,activebackground="white",indicatoron=0,text="ACU",font="Helvetica 20 bold")
 
-        return_button = Button(frame_bottom, text="Go Back",cursor="hand2",
+        back_button = Button(frame_bottom, text="Go Back",cursor="hand2",
             bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=15,
             command=lambda: controller.show_frame("ChoosePlayerScreen"),activebackground=bgMain)
-        next_button = Button(frame_bottom, text="Fight!",cursor="hand2",
+        next_button = Button(frame_bottom, text="Next",cursor="hand2",
             bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=15,
-            command=lambda: controller.show_frame("GameScreen"),activebackground=bgMain)
+            command=lambda: controller.show_frame("IdleScreen"),activebackground=bgMain)
 
         ############################ Design ############################
         #frame_top Design Layout
@@ -364,15 +320,68 @@ class ChooseOpponentScreen(Frame):
         acu1_radiobutton.grid(row=0,column=3)
 
         #frame_bottom Design Layout
-        return_button.pack(side=LEFT)
+        back_button.pack(side=LEFT)
         next_button.pack(side=RIGHT)
 
+class IdleScreen(Frame):
+    def __init__(self, parent, controller):
+        Frame.__init__(self, parent)
+        self.controller = controller
+        bgMain = controller.bg_main
+        fgMain = controller.fg_main
+        self.config(bg=bgMain)
+
+
+        ############################ Frames ############################
+        frame_top = Frame(self,highlightbackground=bgMain,highlightthickness=1)
+        frame_middle = Frame(self,highlightbackground=bgMain,highlightthickness=1)
+        frame_bottom = Frame(self,highlightbackground=bgMain,highlightthickness=1)
+
+        frame_top.pack(expand=True)
+        frame_middle.pack(expand=True)
+        frame_bottom.pack(expand=True)
+
+        ############################ Images ############################
+        raw_plebe1 = Image.open("resources/plebe/plebeStanding.png")
+        raw_plebe1 = raw_plebe1.resize((240,360))
+        img_plebe1 = ImageTk.PhotoImage(raw_plebe1)
+
+        raw_supt1 = Image.open("resources/supt/suptStanding.png")
+        raw_supt1 = raw_supt1.resize((240,360))
+        img_supt1 = ImageTk.PhotoImage(raw_supt1)
+
+
+        ############################ Widgets ############################
+        ready_label = Label(frame_top,text="Get Ready!",
+            font="Helvetica 40 bold italic underline",bg=bgMain)
+
+        plebe1_label = Label(frame_middle,image=img_plebe1,bg=bgMain,height=374)
+        plebe1_label.image = img_plebe1
+        supt1_label = Label(frame_middle,image=img_supt1,bg=bgMain,height=374)
+        supt1_label.image = img_supt1
+
+        vs_label = Label(frame_middle,text="vs.",font="Helvetica 60 bold",bg=bgMain,height=4)
+
+        back_button = Button(frame_bottom, text="Go Back",cursor="hand2",
+            bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=15,
+            command=lambda: controller.show_frame("ChooseOpponentScreen"),activebackground=bgMain)
+        fight_button = Button(frame_bottom, text="Fight!",cursor="hand2",
+            bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=15,
+            command=lambda: controller.runGame(),activebackground=bgMain)
+
+        ############################ Design ############################
+        #frame_top Design Layout
+        ready_label.pack(expand=True)
+
+        #frame_middle Design Layout
+        plebe1_label.grid(row=0,column=0)
+        vs_label.grid(row=0,column=1)
+        supt1_label.grid(row=0,column=2)
+
+        #frame_bottom Design Layout
+        back_button.pack(side=LEFT)
+        fight_button.pack(side=RIGHT)
+
 if __name__ == "__main__":
-    Game()
-
-
-"""
-cwd = os.getcwd()
-files = os.listdir(cwd)
-print("Files in %r: %s" % (cwd, files))
-"""
+    state = "startup"
+    Game(state)
