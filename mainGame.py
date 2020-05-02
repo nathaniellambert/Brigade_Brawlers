@@ -2,9 +2,11 @@ from tkinter import *
 from tkinter import messagebox as mBox
 from PIL import ImageTk, Image
 import os
+import platform
+import pygame
+import time
 
 class Game(Tk):
-
     def __init__(self, *args, **kwargs):
         Tk.__init__(self, *args, **kwargs)
 
@@ -28,6 +30,7 @@ class Game(Tk):
         ############################ Commands ############################
         def doQuit(*args):
             #if mBox.askokcancel("Quit", "Are you sure you want to quit?"):
+            pygame.quit()
             root.destroy()
 
         ############################ Menus ############################
@@ -55,8 +58,52 @@ class Game(Tk):
         frame = self.frames[page_name]
         frame.tkraise()
 
-class MainScreen(Frame):
+class GameScreen(Frame):
+    def __init__(self, parent, controller):
+        Frame.__init__(self, parent)
+        self.controller = controller
+        bgMain = controller.bg_main
+        self.config(bg=bgMain)
 
+        ############################ Images ############################
+        raw_gameBG = Image.open("resources/gameBG.png")
+        raw_gameBG = raw_gameBG.resize((980,560))
+        img_gameBG = ImageTk.PhotoImage(raw_gameBG)
+
+        ############################ Frames ############################
+        pygame_frame = Frame(self,highlightbackground=bgMain,highlightthickness=1)
+        pygame_frame.pack(expand=True)
+
+        ############################ Widgets ############################
+        background_label = Label(pygame_frame, image=img_gameBG)
+        background_label.image = img_gameBG
+
+        ############################ Design ############################
+        background_label.pack()
+
+        os.environ['SDL_WINDOWID'] = str(pygame_frame.winfo_id())
+        system = platform.system()
+        if system == "Windows":
+            os.environ['SDL_VIDEODRIVER'] = 'windib'
+        elif system == "Linux":
+            os.environ['SDL_VIDEODRIVER'] = 'x11'
+
+        screen = pygame.display.set_mode((200,200))
+        pygame.display.init()
+        pygame.display.update()
+
+        """
+        ############################ Widgets ############################
+        return_button = Button(self, text="Return to Menu",cursor="hand2",
+            bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=20,
+            command=lambda: controller.show_frame("MainScreen"),activebackground=bgMain)
+
+        ############################ Design ############################
+        return_button.pack(side=BOTTOM)
+        """
+
+
+class MainScreen(Frame):
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
         self.controller = controller
@@ -102,7 +149,6 @@ class MainScreen(Frame):
         controls_button.pack(side=RIGHT)
 
 class ControlsScreen(Frame):
-
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
         self.controller = controller
@@ -143,7 +189,6 @@ class ControlsScreen(Frame):
         return_button.pack(expand=True)
 
 class ChoosePlayerScreen(Frame):
-
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
         self.controller = controller
@@ -232,7 +277,6 @@ class ChoosePlayerScreen(Frame):
         next_button.pack(side=RIGHT)
 
 class ChooseOpponentScreen(Frame):
-
     def __init__(self, parent, controller):
         Frame.__init__(self, parent)
         self.controller = controller
@@ -319,22 +363,6 @@ class ChooseOpponentScreen(Frame):
         #frame_bottom Design Layout
         return_button.pack(side=LEFT)
         next_button.pack(side=RIGHT)
-
-class GameScreen(Frame):
-
-    def __init__(self, parent, controller):
-        Frame.__init__(self, parent)
-        self.controller = controller
-        bgMain = controller.bg_main
-        self.config(bg=bgMain)
-
-        ############################ Widgets ############################
-        return_button = Button(self, text="Return to Menu",cursor="hand2",
-            bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=20,
-            command=lambda: controller.show_frame("MainScreen"),activebackground=bgMain)
-
-        ############################ Design ############################
-        return_button.pack(side=BOTTOM)
 
 if __name__ == "__main__":
     Game()
