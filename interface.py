@@ -6,11 +6,21 @@ import testPygame
 class Game(Tk):
     def __init__(self,state):
         Tk.__init__(self)
-        self.state = state
 
-        ############################ Colors ############################
+        self.state = state
         self.bg_main = "#%02x%02x%02x" % (247,219,151) #beige
         self.fg_main = "#%02x%02x%02x" % (241,127,19) #orange
+        self.playerID = 1
+        self.opponentID = 2
+        self.playerPath = "resources/plebe/plebeStanding.png"
+        self.opponentPath = "resources/dpe/dpeStanding.png"
+        raw_player = Image.open(self.playerPath)
+        raw_player = raw_player.resize((240,360))
+        self.img_player = ImageTk.PhotoImage(raw_player)
+
+        raw_opponent = Image.open(self.opponentPath)
+        raw_opponent = raw_opponent.resize((240,360))
+        self.img_opponent = ImageTk.PhotoImage(raw_opponent)
 
         ############################ Root Setup ############################
         root = Toplevel()
@@ -60,7 +70,39 @@ class Game(Tk):
         frame.tkraise()
 
     def runGame(self):
-        testPygame.play_game()
+        testPygame.play_game(self.playerID,self.opponentID)
+
+    def setPlayer(self,imageID):
+        self.playerID = imageID
+        if (imageID == 1):
+            self.playerPath = "resources/plebe/plebeStanding.png"
+        if (imageID == 2):
+            self.playerPath = "resources/dpe/dpeStanding.png"
+        if (imageID == 3):
+            self.playerPath = "resources/supt/suptStanding.png"
+        if (imageID == 4):
+            self.playerPath = "resources/acu/acuStanding.png"
+        raw_player = Image.open(self.playerPath)
+        raw_player = raw_player.resize((240,360))
+        self.img_player = ImageTk.PhotoImage(raw_player)
+        frame = self.frames["IdleScreen"]
+        frame.updatePlayerImage(self.img_player)
+
+    def setOpponent(self,imageID):
+        self.opponentID = imageID
+        if (imageID == 1):
+            self.opponentPath = "resources/plebe/plebeStanding.png"
+        if (imageID == 2):
+            self.opponentPath = "resources/dpe/dpeStanding.png"
+        if (imageID == 3):
+            self.opponentPath = "resources/supt/suptStanding.png"
+        if (imageID == 4):
+            self.opponentPath = "resources/acu/acuStanding.png"
+        raw_opponent = Image.open(self.opponentPath)
+        raw_opponent = raw_opponent.resize((240,360))
+        self.img_opponent = ImageTk.PhotoImage(raw_opponent)
+        frame = self.frames["IdleScreen"]
+        frame.updateOpponentImage(self.img_opponent)
 
 class MainScreen(Frame):
     def __init__(self, parent, controller):
@@ -104,8 +146,8 @@ class MainScreen(Frame):
         menuFigure_label.pack(expand=True)
 
         #frame_bottom Design Layout
-        play_button.pack(side=LEFT)
-        controls_button.pack(side=RIGHT)
+        controls_button.pack(side=LEFT)
+        play_button.pack(side=RIGHT)
 
 class ControlsScreen(Frame):
     def __init__(self, parent, controller):
@@ -198,16 +240,20 @@ class ChoosePlayerScreen(Frame):
         acu1_label = Label(frame_middleTop,image=img_acu1,bg=bgMain)
         acu1_label.image = img_acu1
 
-        plebe1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=playerVar,value=1,
-            padx=65,activebackground="white",indicatoron=0,text="Plebe",font="Helvetica 20 bold")
-        dpe1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=playerVar,value=2,
-            padx=65,activebackground="white",indicatoron=0,text="DPE",font="Helvetica 20 bold")
-        supt1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=playerVar,value=3,
-            padx=65,activebackground="white",indicatoron=0,text="SUPT",font="Helvetica 20 bold")
-        acu1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=playerVar,value=4,
-            padx=65,activebackground="white",indicatoron=0,text="ACU",font="Helvetica 20 bold")
+        plebe1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,value=1,variable=playerVar,
+            padx=65,activebackground="white",indicatoron=0,text="Plebe",font="Helvetica 20 bold",
+            command=lambda: controller.setPlayer(playerVar.get()))
+        dpe1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,value=2,variable=playerVar,
+            padx=65,activebackground="white",indicatoron=0,text="DPE",font="Helvetica 20 bold",
+            command=lambda: controller.setPlayer(playerVar.get()))
+        supt1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,value=3,variable=playerVar,
+            padx=65,activebackground="white",indicatoron=0,text="SUPT",font="Helvetica 20 bold",
+            command=lambda: controller.setPlayer(playerVar.get()))
+        acu1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,value=4,variable=playerVar,
+            padx=65,activebackground="white",indicatoron=0,text="ACU",font="Helvetica 20 bold",
+            command=lambda: controller.setPlayer(playerVar.get()))
 
-        back_button = Button(frame_bottom, text="Return to Menu",cursor="hand2",
+        back_button = Button(frame_bottom, text="Back",cursor="hand2",
             bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=15,
             command=lambda: controller.show_frame("MainScreen"),activebackground=bgMain)
         next_button = Button(frame_bottom, text="Next",cursor="hand2",
@@ -287,13 +333,17 @@ class ChooseOpponentScreen(Frame):
         acu1_label.image = img_acu1
 
         plebe1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=opponentVar,value=1,
-            padx=65,activebackground="white",indicatoron=0,text="Plebe",font="Helvetica 20 bold")
+            padx=65,activebackground="white",indicatoron=0,text="Plebe",font="Helvetica 20 bold",
+            command=lambda: controller.setOpponent(opponentVar.get()))
         dpe1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=opponentVar,value=2,
-            padx=65,activebackground="white",indicatoron=0,text="DPE",font="Helvetica 20 bold")
+            padx=65,activebackground="white",indicatoron=0,text="DPE",font="Helvetica 20 bold",
+            command=lambda: controller.setOpponent(opponentVar.get()))
         supt1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=opponentVar,value=3,
-            padx=65,activebackground="white",indicatoron=0,text="SUPT",font="Helvetica 20 bold")
+            padx=65,activebackground="white",indicatoron=0,text="SUPT",font="Helvetica 20 bold",
+            command=lambda: controller.setOpponent(opponentVar.get()))
         acu1_radiobutton = Radiobutton(frame_middleBottom,bg=fgMain,variable=opponentVar,value=4,
-            padx=65,activebackground="white",indicatoron=0,text="ACU",font="Helvetica 20 bold")
+            padx=65,activebackground="white",indicatoron=0,text="ACU",font="Helvetica 20 bold",
+            command=lambda: controller.setOpponent(opponentVar.get()))
 
         back_button = Button(frame_bottom, text="Go Back",cursor="hand2",
             bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=15,
@@ -331,7 +381,6 @@ class IdleScreen(Frame):
         fgMain = controller.fg_main
         self.config(bg=bgMain)
 
-
         ############################ Frames ############################
         frame_top = Frame(self,highlightbackground=bgMain,highlightthickness=1)
         frame_middle = Frame(self,highlightbackground=bgMain,highlightthickness=1)
@@ -341,26 +390,16 @@ class IdleScreen(Frame):
         frame_middle.pack(expand=True)
         frame_bottom.pack(expand=True)
 
-        ############################ Images ############################
-        raw_plebe1 = Image.open("resources/plebe/plebeStanding.png")
-        raw_plebe1 = raw_plebe1.resize((240,360))
-        img_plebe1 = ImageTk.PhotoImage(raw_plebe1)
-
-        raw_supt1 = Image.open("resources/supt/suptStanding.png")
-        raw_supt1 = raw_supt1.resize((240,360))
-        img_supt1 = ImageTk.PhotoImage(raw_supt1)
-
-
         ############################ Widgets ############################
         ready_label = Label(frame_top,text="Get Ready!",
             font="Helvetica 40 bold italic underline",bg=bgMain)
 
-        plebe1_label = Label(frame_middle,image=img_plebe1,bg=bgMain,height=374)
-        plebe1_label.image = img_plebe1
-        supt1_label = Label(frame_middle,image=img_supt1,bg=bgMain,height=374)
-        supt1_label.image = img_supt1
+        self.player_label = Label(frame_middle,image=controller.img_player,bg=bgMain,height=374)
+        self.player_label.image = controller.img_player
+        self.opponent_label = Label(frame_middle,image=controller.img_opponent,bg=bgMain,height=374)
+        self.opponent_label.image = controller.img_opponent
 
-        vs_label = Label(frame_middle,text="vs.",font="Helvetica 60 bold",bg=bgMain,height=4)
+        vs_label = Label(frame_middle,text=" vs.",font="Helvetica 60 bold",bg=bgMain,height=4)
 
         back_button = Button(frame_bottom, text="Go Back",cursor="hand2",
             bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=15,
@@ -369,18 +408,25 @@ class IdleScreen(Frame):
             bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=15,
             command=lambda: controller.runGame(),activebackground=bgMain)
 
+
         ############################ Design ############################
         #frame_top Design Layout
         ready_label.pack(expand=True)
 
         #frame_middle Design Layout
-        plebe1_label.grid(row=0,column=0)
+        self.player_label.grid(row=0,column=0)
         vs_label.grid(row=0,column=1)
-        supt1_label.grid(row=0,column=2)
+        self.opponent_label.grid(row=0,column=2)
 
         #frame_bottom Design Layout
         back_button.pack(side=LEFT)
         fight_button.pack(side=RIGHT)
+
+    def updatePlayerImage(self,img):
+        self.player_label.config(image=img)
+
+    def updateOpponentImage(self,img):
+        self.opponent_label.config(image=img)
 
 if __name__ == "__main__":
     state = "startup"

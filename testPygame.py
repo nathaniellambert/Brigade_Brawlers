@@ -4,26 +4,27 @@ import interface
 
 os.environ['SDL_VIDEO_CENTERED'] = '1'
 
-def play_game():
+def play_game(one,two):
     pygame.init()
     screen = pygame.display.set_mode((400, 300))
     activeGame = True
 
-    is_blue = True
+    print("%d,%d" %(one,two))
+
+    isBlue = True
     while activeGame:
         for event in pygame.event.get():
             if event.type == KEYDOWN:
                 if event.key == K_SPACE:
-                    is_blue = not is_blue
+                    isBlue = not isBlue
                 if event.key == K_ESCAPE:
                     activeGame = False
                     pygame.quit()
                     interface.Game("resume")
 
-
         pygame.draw.rect(screen, (0, 128, 255), pygame.Rect(30, 30, 60, 60))
 
-        if is_blue:
+        if isBlue:
             color = (0, 128, 255)
         else:
             color = (255, 100, 0)
@@ -33,4 +34,4 @@ def play_game():
         pygame.display.flip()
 
 if __name__=='__main__':
-    play_game()
+    play_game(1,2)
