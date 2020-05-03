@@ -1,7 +1,7 @@
 from tkinter import *
 from tkinter import messagebox as mBox
 from PIL import ImageTk, Image
-import testPygame
+import gamePlay
 
 class Game(Tk):
     def __init__(self,state):
@@ -70,7 +70,7 @@ class Game(Tk):
         frame.tkraise()
 
     def runGame(self):
-        testPygame.play_game(self.playerID,self.opponentID)
+        gamePlay.play_game(self.playerID,self.opponentID)
 
     def setPlayer(self,imageID):
         self.playerID = imageID
@@ -167,7 +167,7 @@ class ControlsScreen(Frame):
 
         ############################ Images ############################
         raw_controls = Image.open("resources/controls.jpg")
-        raw_controls = raw_controls.resize((700,400))
+        raw_controls = raw_controls.resize((800,400))
         img_controls = ImageTk.PhotoImage(raw_controls)
 
         ############################ Widgets ############################
@@ -345,7 +345,7 @@ class ChooseOpponentScreen(Frame):
             padx=65,activebackground="white",indicatoron=0,text="ACU",font="Helvetica 20 bold",
             command=lambda: controller.setOpponent(opponentVar.get()))
 
-        back_button = Button(frame_bottom, text="Go Back",cursor="hand2",
+        back_button = Button(frame_bottom, text="Back",cursor="hand2",
             bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=15,
             command=lambda: controller.show_frame("ChoosePlayerScreen"),activebackground=bgMain)
         next_button = Button(frame_bottom, text="Next",cursor="hand2",
@@ -364,8 +364,8 @@ class ChooseOpponentScreen(Frame):
 
         #frame_middleBottom Design Layout
         plebe1_radiobutton.grid(row=0,column=0)
-        plebe1_radiobutton.select()
         dpe1_radiobutton.grid(row=0,column=1)
+        dpe1_radiobutton.select()
         supt1_radiobutton.grid(row=0,column=2)
         acu1_radiobutton.grid(row=0,column=3)
 
@@ -401,7 +401,7 @@ class IdleScreen(Frame):
 
         vs_label = Label(frame_middle,text=" vs.",font="Helvetica 60 bold",bg=bgMain,height=4)
 
-        back_button = Button(frame_bottom, text="Go Back",cursor="hand2",
+        back_button = Button(frame_bottom, text="Back",cursor="hand2",
             bg=controller.fg_main,font="Helvetica 28 bold",borderwidth=5,padx=10,pady=6,width=15,
             command=lambda: controller.show_frame("ChooseOpponentScreen"),activebackground=bgMain)
         fight_button = Button(frame_bottom, text="Fight!",cursor="hand2",

@@ -52,8 +52,11 @@ class Fighter(object):
         self.fighter = self.fighter_images[self.player_num][self.img_num].get_rect(topleft = (0,int(HEIGHT/2)))
 
     def load_fighter_images(self):
-        self.file_names = [['MalePlebeWalk1.png','MalePlebeWalk2.png','MalePlebeWalk3.png','MalePlebeWalk4.png','MalePlebeWalk5.png'],
-                            ['MalePlebeWalkR1.png','MalePlebeWalkR2.png','MalePlebeWalkR3.png','MalePlebeWalkR4.png','MalePlebeWalkR5.png']]
+        self.file_names = [
+            ['MalePlebeWalk1.png','MalePlebeWalk2.png','MalePlebeWalk3.png',
+            'MalePlebeWalk4.png','MalePlebeWalk5.png'],
+            ['MalePlebeWalkR1.png','MalePlebeWalkR2.png','MalePlebeWalkR3.png',
+            'MalePlebeWalkR4.png','MalePlebeWalkR5.png']]
         self.fighter_images = [[] * 2 for row in range(2)]
         for player in range(len(self.file_names)):
             for file_name in range(len(self.file_names[player])):
