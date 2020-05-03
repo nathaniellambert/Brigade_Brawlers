@@ -36,8 +36,8 @@ class Fighter(object):
         punchingImages = [
             'resources/plebe/plebePunch.png',
             'resources/dpe/dpePunch.png',
-            'resources/plebe/plebePunch.png', #'resources/supt/suptPunch.png'
-            'resources/plebe/plebePunch.png'] #'resources/acu/acuPunch.png'
+            'resources/supt/suptPunch.png',
+            'resources/acu/acuPunch.png']
 
         punchImg = pygame.image.load(punchingImages[self.fighterID])
         return punchImg
