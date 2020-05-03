@@ -154,8 +154,7 @@ def play_game(playerID,opponentID):
     playerFacingRight = True
     opponentFacingRight = False
 
-    strategy = random.randrange(0,2)
-    strategy = 2
+    strategy = random.randrange(0,3)
     oppRetreat = False
     activeGame = True
     while activeGame:
@@ -242,13 +241,14 @@ def play_game(playerID,opponentID):
                     oppMove = 2
             else:
                 oppMove = 3
-        elif strategy = 1:
+        elif strategy == 1:
             if oppRetreat:
                 if opponent.fighter.centerx > 100:
                     oppMove = 1
                 elif oppInRange:
                     oppMove = 3
                 else:
+                    opponentFacingRight = True
                     oppMove = 0
             elif opponent.health > 80:
                 if oppInRange:
@@ -266,9 +266,38 @@ def play_game(playerID,opponentID):
                 else:
                     oppRetreat = True
         else:
-            oppMove = 0
-
-
+            if opponent.health > 300 and opponent.health < 370:
+                oppMove = 3
+            elif opponent.health <= 300:
+                if opponent.health < 70:
+                    if opponent.fighter.centerx > 930:
+                        if oppInRange:
+                            oppMove = 3
+                        else:
+                            opponentFacingRight = False
+                            oppMove = 0
+                    else:
+                        oppMove = 2
+                elif opponent.fighter.centerx > 50:
+                    oppMove = 1
+                elif oppInRange:
+                    oppMove = 3
+                else:
+                    opponentFacingRight = True
+                    oppMove = 0
+            elif opponent.fighter.centerx > 900 and oppInRange == False:
+                opponentFacingRight = False
+                oppMove = 0
+            elif oppOnRight and oppRetreat == False:
+                if oppInRange:
+                    oppRetreat = True
+                    oppMove = 2
+                elif opponent.fighter.centerx > 320:
+                    oppMove = 1
+                else:
+                    oppMove = 0
+            else:
+                oppMove = 2
 
         if oppMove == 0:
             if opponentFacingRight:
