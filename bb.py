@@ -283,8 +283,11 @@ def play_game():
                 #Player 1
                 if controls[K_m]:
                     m = 2
-                    if player1.fighter.x >= player2.fighter.x:
-                        player2.health -= 10
+                    if abs(player1.fighter.x - player2.fighter.x) <= 50:
+                        if controls[K_e]:
+                            pass
+                        else:
+                            player2.health -= 10
                     else:
                         pass
 
