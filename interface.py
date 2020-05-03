@@ -37,8 +37,9 @@ class Game(Tk):
 
         ############################ Commands ############################
         def doQuit(*args):
-            #if mBox.askokcancel("Quit", "Are you sure you want to quit?"):
-            root.destroy()
+            if mBox.askokcancel("Quit", "Are you sure you want to quit?"):
+                root.destroy()
+                sys.exit()
 
         ############################ Menus ############################
         mainMenu = Menu(root)
@@ -63,6 +64,7 @@ class Game(Tk):
 
         ############################ Main Loop ############################
         root.bind("<Control-q>",doQuit)
+        root.protocol("WM_DELETE_WINDOW", doQuit)
         root.mainloop()
 
     def show_frame(self, page_name):

@@ -1,4 +1,4 @@
-import pygame, random, os
+import pygame, random, os, sys
 from pygame.locals import *
 import interface
 
@@ -99,6 +99,7 @@ def play_game(playerID,opponentID):
                 if event.type == pygame.QUIT:
                     gameover = False
                     pygame.quit()
+                    sys.exit()
                     interface.Game("resume")
                 if event.type == pygame.KEYDOWN:
                     if event.key == K_r:
@@ -106,6 +107,7 @@ def play_game(playerID,opponentID):
                     if event.key == K_q or event.key == K_ESCAPE:
                         gameover = False
                         pygame.quit()
+                        sys.exit()
                         interface.Game("resume")
             if playerWon:
                 screen.blit(font2.render("You won!",True,GREEN),[330,150])
@@ -153,7 +155,8 @@ def play_game(playerID,opponentID):
     opponentFacingRight = False
 
     strategy = random.randrange(0,2)
-
+    strategy = 2
+    oppRetreat = False
     activeGame = True
     while activeGame:
         playerMove = 0
@@ -168,6 +171,7 @@ def play_game(playerID,opponentID):
                 if event.key == K_ESCAPE:
                     activeGame = False
                     pygame.quit()
+                    sys.exit()
                     interface.Game("resume")
                 if controls[K_LEFT]:
                     playerFacingRight = False
@@ -209,7 +213,7 @@ def play_game(playerID,opponentID):
         oppInRange = False
         if (dist < 0):
             oppOnRight = False
-        if (abs(dist) <= 50):
+        if (abs(dist) <= 60):
             oppInRange = True
 
         oppMove = 0
@@ -238,6 +242,29 @@ def play_game(playerID,opponentID):
                     oppMove = 2
             else:
                 oppMove = 3
+        elif strategy = 1:
+            if oppRetreat:
+                if opponent.fighter.centerx > 100:
+                    oppMove = 1
+                elif oppInRange:
+                    oppMove = 3
+                else:
+                    oppMove = 0
+            elif opponent.health > 80:
+                if oppInRange:
+                    oppMove = 3
+                elif oppOnRight:
+                    oppMove = 1
+                else:
+                    oppMove = 2
+            else:
+                if oppOnRight:
+                    if opponent.fighter.centerx < 900:
+                        oppMove = 2
+                    elif abs(dist < 130):
+                        oppRetreat = True
+                else:
+                    oppRetreat = True
         else:
             oppMove = 0
 
