@@ -1,4 +1,4 @@
-import pygame, random, os, sys
+import pygame, random, os
 from pygame.locals import *
 import interface
 
@@ -26,8 +26,8 @@ class Fighter(object):
         standingImages = [
             'resources/plebe/plebeStanding.png',
             'resources/dpe/dpeStanding.png',
-            'resources/supt/suptStanding.png', #'resources/supt/suptStanding.png'
-            'resources/acu/acuStanding.png'] #'resources/acu/acuStanding.png'
+            'resources/supt/suptStanding.png',
+            'resources/acu/acuStanding.png']
 
         standImg = pygame.image.load(standingImages[self.fighterID])
         return standImg
@@ -99,7 +99,6 @@ def play_game(playerID,opponentID):
                 if event.type == pygame.QUIT:
                     gameover = False
                     pygame.quit()
-                    sys.exit()
                     interface.Game("resume")
                 if event.type == pygame.KEYDOWN:
                     if event.key == K_r:
@@ -107,7 +106,6 @@ def play_game(playerID,opponentID):
                     if event.key == K_q or event.key == K_ESCAPE:
                         gameover = False
                         pygame.quit()
-                        sys.exit()
                         interface.Game("resume")
             if playerWon:
                 screen.blit(font2.render("You won!",True,GREEN),[330,150])
@@ -170,7 +168,6 @@ def play_game(playerID,opponentID):
                 if event.key == K_ESCAPE:
                     activeGame = False
                     pygame.quit()
-                    sys.exit()
                     interface.Game("resume")
                 if controls[K_LEFT]:
                     playerFacingRight = False

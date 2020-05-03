@@ -37,9 +37,9 @@ class Game(Tk):
 
         ############################ Commands ############################
         def doQuit(*args):
-            if mBox.askokcancel("Quit", "Are you sure you want to quit?"):
-                root.destroy()
-                sys.exit()
+            #if mBox.askokcancel("Quit", "Are you sure you want to quit?"):
+            root.destroy()
+            sys.exit()
 
         ############################ Menus ############################
         mainMenu = Menu(root)
@@ -201,6 +201,20 @@ class ChoosePlayerScreen(Frame):
 
         playerVar = IntVar()
 
+        ############################ Commands ############################
+        def imageSelect1(*args):
+            plebe1_radiobutton.select()
+            controller.setPlayer(playerVar.get())
+        def imageSelect2(*args):
+            dpe1_radiobutton.select()
+            controller.setPlayer(playerVar.get())
+        def imageSelect3(*args):
+            supt1_radiobutton.select()
+            controller.setPlayer(playerVar.get())
+        def imageSelect4(*args):
+            acu1_radiobutton.select()
+            controller.setPlayer(playerVar.get())
+
         ############################ Frames ############################
         frame_top = Frame(self,highlightbackground=bgMain,highlightthickness=1)
         frame_middleTop = Frame(self,highlightbackground=bgMain,highlightthickness=1)
@@ -268,9 +282,13 @@ class ChoosePlayerScreen(Frame):
 
         #frame_middleTop Design Layout
         plebe1_label.grid(row=0,column=0)
+        plebe1_label.bind("<Button>",imageSelect1)
         dpe1_label.grid(row=0,column=1)
+        dpe1_label.bind("<Button>",imageSelect2)
         supt1_label.grid(row=0,column=2)
+        supt1_label.bind("<Button>",imageSelect3)
         acu1_label.grid(row=0,column=3)
+        acu1_label.bind("<Button>",imageSelect4)
 
         #frame_middleBottom Design Layout
         plebe1_radiobutton.grid(row=0,column=0)
@@ -292,6 +310,20 @@ class ChooseOpponentScreen(Frame):
         self.config(bg=bgMain)
 
         opponentVar = IntVar()
+
+        ############################ Commands ############################
+        def imageSelect1(*args):
+            plebe1_radiobutton.select()
+            controller.setOpponent(opponentVar.get())
+        def imageSelect2(*args):
+            dpe1_radiobutton.select()
+            controller.setOpponent(opponentVar.get())
+        def imageSelect3(*args):
+            supt1_radiobutton.select()
+            controller.setOpponent(opponentVar.get())
+        def imageSelect4(*args):
+            acu1_radiobutton.select()
+            controller.setOpponent(opponentVar.get())
 
         ############################ Frames ############################
         frame_top = Frame(self,highlightbackground=bgMain,highlightthickness=1)
@@ -360,9 +392,13 @@ class ChooseOpponentScreen(Frame):
 
         #frame_middleTop Design Layout
         plebe1_label.grid(row=0,column=0)
+        plebe1_label.bind("<Button>",imageSelect1)
         dpe1_label.grid(row=0,column=1)
+        dpe1_label.bind("<Button>",imageSelect2)
         supt1_label.grid(row=0,column=2)
+        supt1_label.bind("<Button>",imageSelect3)
         acu1_label.grid(row=0,column=3)
+        acu1_label.bind("<Button>",imageSelect4)
 
         #frame_middleBottom Design Layout
         plebe1_radiobutton.grid(row=0,column=0)
