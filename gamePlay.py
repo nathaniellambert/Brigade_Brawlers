@@ -148,6 +148,11 @@ def play_game(playerID,opponentID):
     score = 0
     score_font = pygame.font.SysFont(None,20)
 
+    punching_PlayerImages = [player.standing_image,player.standing_image,
+        player.punching_image,player.punching_image]
+    punching_OpponentImages = [opponent.standing_image,opponent.standing_image,
+        opponent.punching_image,opponent.punching_image]
+
     seconds = -1
     playerFacingRight = True
     opponentFacingRight = False
@@ -199,10 +204,12 @@ def play_game(playerID,opponentID):
             player.running_images.append(player.running_images.pop(0))
             display.blit(player.running_images[0],player.fighter)
         if playerMove == 3:
+            punching_PlayerImages.append(punching_PlayerImages.pop(0))
+            puncing_img = punching_PlayerImages[0]
             if playerFacingRight:
-                display.blit(player.punching_image,player.fighter)
+                display.blit(puncing_img,player.fighter)
             else:
-                display.blit(pygame.transform.flip(player.punching_image,True,False),player.fighter)
+                display.blit(pygame.transform.flip(puncing_img,True,False),player.fighter)
 
         dist = opponent.fighter.centerx-player.fighter.centerx
         oppOnRight = True
@@ -316,10 +323,12 @@ def play_game(playerID,opponentID):
         if oppMove == 3:
             if abs(player.fighter.x - opponent.fighter.x) <= 60:
                 player.health -= 10
+            punching_OpponentImages.append(punching_OpponentImages.pop(0))
+            puncing_img = punching_OpponentImages[0]
             if opponentFacingRight:
-                display.blit(opponent.punching_image,opponent.fighter)
+                display.blit(puncing_img,opponent.fighter)
             else:
-                display.blit(pygame.transform.flip(opponent.punching_image,True,False),opponent.fighter)
+                display.blit(pygame.transform.flip(puncing_img,True,False),opponent.fighter)
 
         if player.health <= 0 or opponent.health <= 0:
             gameover_screen(player.health > opponent.health)

@@ -37,9 +37,9 @@ class Game(Tk):
 
         ############################ Commands ############################
         def doQuit(*args):
-            #if mBox.askokcancel("Quit", "Are you sure you want to quit?"):
-            root.destroy()
-            sys.exit()
+            if mBox.askokcancel("Quit", "Are you sure you want to quit?"):
+                root.destroy()
+                sys.exit()
 
         ############################ Menus ############################
         mainMenu = Menu(root)
