@@ -92,7 +92,7 @@ def health_bars(playerHealth, opponentHealth, display):
     pygame.draw.rect(display, opponentHealth_color, (WIDTH-430, 25, opponentHealth, 25))
 
 def play_game(playerID,opponentID):
-    def gameover_screen():
+    def gameover_screen(playerWon):
         gameover = True
         while gameover:
             for event in pygame.event.get():
@@ -103,13 +103,18 @@ def play_game(playerID,opponentID):
                 if event.type == pygame.KEYDOWN:
                     if event.key == K_r:
                         gameover = False
-                    if event.key == K_q:
+                    if event.key == K_q or event.key == K_ESCAPE:
                         gameover = False
                         pygame.quit()
                         interface.Game("resume")
-
-            text = font.render("PRESS 'R' TO PLAY AGAIN // PRESS 'Q' TO QUIT", True, BLACK)
-            screen.blit(text, [WIDTH*1//6, HEIGHT//3])
+            if playerWon:
+                screen.blit(font2.render("You won!",True,GREEN),[330,150])
+            else:
+                screen.blit(font2.render("You lost!",True,RED),[330,150])
+            screen.blit(font1.render("PRESS 'R' TO PLAY AGAIN", True, BLACK),
+                [330,290])
+            screen.blit(font1.render("PRESS 'Q' TO QUIT", True, BLACK),
+                [375,320])
             pygame.display.update()
             screen.blit(washingtonHall_BG, (0, 0))
             game_clock.tick(FPS)
@@ -124,17 +129,14 @@ def play_game(playerID,opponentID):
     screen = pygame.display.set_mode((WIDTH, HEIGHT))
     screen.fill((255, 255, 255))
     washingtonHall_BG = pygame.image.load('resources/wh.png')
-    font = pygame.font.SysFont('comicsansms', 25)
+    font1 = pygame.font.SysFont('comicsansms', 25)
+    font2 = pygame.font.SysFont('comicsansms', 80)
 
     pygame.display.set_caption("Brigade Brawlers")
     display = pygame.display.set_mode((WIDTH,HEIGHT))
 
     player = Fighter(50,400,playerID-1)
     opponent = Fighter(800,400,opponentID-1)
-    player.centerx = 0
-    player.centery = 0
-    opponent.centerx = pygame.display.get_surface().get_width()
-    opponent.centery = pygame.display.get_surface().get_width()
 
     screen.fill((255, 255, 255))
     screen.blit(washingtonHall_BG, (0, 0))
@@ -149,6 +151,7 @@ def play_game(playerID,opponentID):
     seconds = -1
     playerFacingRight = True
     opponentFacingRight = False
+
     strategy = random.randrange(0,2)
 
     activeGame = True
@@ -178,8 +181,6 @@ def play_game(playerID,opponentID):
                     playerMove = 3
                     if abs(player.fighter.x - opponent.fighter.x) <= 60:
                         opponent.health -= 10
-                    else:
-                        pass
             else:
                 playerMove = 0
 
@@ -203,28 +204,72 @@ def play_game(playerID,opponentID):
             else:
                 display.blit(pygame.transform.flip(player.punching_image,True,False),player.fighter)
 
-        """
-        def opponentAI():
-            ticks = pygame.time.get_ticks()
-            if strategy == 0:
-                while (ticks < 4000):
+        dist = opponent.fighter.centerx-player.fighter.centerx
+        oppOnRight = True
+        oppInRange = False
+        if (dist < 0):
+            oppOnRight = False
+        if (abs(dist) <= 50):
+            oppInRange = True
+
+        oppMove = 0
+
+        if strategy == 0:
+            if opponent.health > 350:
+                if oppInRange:
+                    oppMove = 3
+                else:
+                    oppMove = 0
+            elif opponent.health > 250:
+                if oppInRange and opponent.health < 300:
+                    oppMove = 3
+                elif opponent.fighter.centerx < 100:
+                    opponentFacingRight = True
+                    oppMove = 0
+                else:
+                    oppMove = 1
+            elif opponent.health > 60:
+                if oppInRange and opponent.health > 150:
+                    oppMove = 3
+                elif opponent.fighter.centerx > 700:
                     opponentFacingRight = False
-                    opponent.move_left(25,display)
-                    opponent.running_images.append(opponent.running_images.pop(0))
-                    flipped_img = pygame.transform.flip(opponent.running_images[0],True,False)
-                    display.blit(flipped_img,player.fighter)
-
-            if strategy == 1:
-                pass
-
-        opponentAI()
-        """
+                    oppMove = 0
+                else:
+                    oppMove = 2
+            else:
+                oppMove = 3
+        else:
+            oppMove = 0
 
 
 
+        if oppMove == 0:
+            if opponentFacingRight:
+                display.blit(opponent.standing_image,opponent.fighter)
+            else:
+                display.blit(pygame.transform.flip(opponent.standing_image,True,False),opponent.fighter)
+        if oppMove == 1:
+            opponentFacingRight = False
+            opponent.move_left(25,display)
+            opponent.running_images.append(opponent.running_images.pop(0))
+            flipped_img = pygame.transform.flip(opponent.running_images[0],True,False)
+            display.blit(flipped_img,opponent.fighter)
+        if oppMove == 2:
+            opponentFacingRight = True
+            opponent.move_right(25,display)
+            opponent.running_images.append(opponent.running_images.pop(0))
+            flipped_img = opponent.running_images[0]
+            display.blit(flipped_img,opponent.fighter)
+        if oppMove == 3:
+            if abs(player.fighter.x - opponent.fighter.x) <= 60:
+                player.health -= 10
+            if opponentFacingRight:
+                display.blit(opponent.punching_image,opponent.fighter)
+            else:
+                display.blit(pygame.transform.flip(opponent.punching_image,True,False),opponent.fighter)
 
         if player.health <= 0 or opponent.health <= 0:
-            gameover_screen()
+            gameover_screen(player.health > opponent.health)
 
         health_bars(player.health, opponent.health, display)
 
